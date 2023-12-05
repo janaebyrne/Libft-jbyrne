@@ -1,37 +1,94 @@
+#include "libft.h"
 #include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
 
-char** ft_split(char const *s, char c)
+static int	ft_wordcount(const char *s, char c)
 {
-	char** result;
-	const char *start;
-	int inword;
-	size_t wordlen;
-	int i;
-	size_t wordcount;
+	int	count;
+	int	i;
 
-	inword = 0;
-	start = s;
 	i = 0;
-
-	if (!s)
-		 return NULL;
-	while (*s)
+	count = 0;
+	while (s[i] != '\0')
 	{
-		if (*s == c || *s == '\0')
-		 	inword = 1;
-		 else if (!inword)
-		 {
-            		inword = 1;
-           		 wordcount++;
-		}
-	s++;
+		while (s[i] == c)
+			i++;
+		if (s[i] != '\0')
+			count++;
+		while (s[i] != c && s[i] != '\0')
+			i++;
 	}
-	
-	result = (char**)malloc((wordcount + 1) * sizeof(char*);
-	if (!result)
-        return NULL;
+	return (count);
+}
 
-	while (*s|| inword == '0')
+static int	ft_wordlen(const char *s, char c, int wordindex)
+{
+	int	i;
+	int	currentword;
+	int	wordlen;
+
+	i = 0;
+	currentword = 0;
+	while (currentword < wordindex)
 	{
-		
+		while (s[i] == c)
+			i++;
+		wordlen = 0;
+	}
+	while (s[i] != c && s[i] != '\0')
+	{
+		i++;
+		wordlen++;
+	}
+	currentword++;
+	return (wordlen);
+}
+
+char	*extractword(const char *s, char c, int whichword)
+{
+	int		i;
+	int		j;
+	char	*str;
+
+	i = 0;
+	str = (char *)malloc(sizeof(char) * (ft_wordlen(s, c, whichword) + 1));
+	if (str == NULL)
+		return (NULL);
+	while (whichword > 0)
+	{
+		j = 0;
+		while (s[i] == c)
+			i++;
+		while (s[i] != c && s[i] != '\0')
+		{
+			if (whichword == 1)
+				str[j] = s[i];
+			i++;
+			j++;
+		}
+		whichword--;
+	}
+	str[j] = '\0';
+	return (str);
+}
+
+char	**ft_split(char const *s, char c)
+{
+	char	**str;
+	int		i;
+	int		words;
+
+	i = 0;
+	words = ft_wordcount(s, c);
+	str = (char **)malloc(sizeof(char *) * (words + 1));
+	if (str == NULL)
+		return (NULL);
+	while (i <= words - 1)
+	{
+		str[i] = extractword(s, c, i + 1);
+		i++;
+	}
+	str[i] = NULL;
+	return (str);
+}
+
